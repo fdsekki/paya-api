@@ -1,0 +1,47 @@
+type Query {
+  userById(email: String!): User
+}
+
+type Mutation {
+  createUser(
+    email: String
+    name: String
+    surname: String
+    password: String
+  ): User
+
+  createPayment(
+    currency_receiving: String
+    currency_sending: String
+    quantity: Int
+    recipient: String
+    sender: String
+    memo: String
+  ): String
+}
+
+type Transaction {
+  id: ID
+  currency_receiving: String
+  currency_sending: String
+  quantity: Int
+  recipient: String
+  sender: String
+  memo: String
+}
+
+type User {
+  id: ID
+  email: String
+  name: String
+  surname: String
+  stellarAccount: String
+  stellarSeed: String
+  balance: BalanceUser
+}
+
+type BalanceUser {
+  EURT: String
+  MDLT: String
+  XLM: String
+}
