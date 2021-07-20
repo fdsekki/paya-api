@@ -18,7 +18,7 @@ con.connect(function (err) {
 
 const Query = {
   userById: (root, args, context, info) => {
-    return db.users.get(args.id);
+    return "Hello World";
   },
 };
 
