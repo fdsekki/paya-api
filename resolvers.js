@@ -2,11 +2,11 @@ const Stellar = require("stellar-sdk");
 // const db = require("./db");
 const fetch = require("node-fetch");
 const { createTrustline, allowTrustline, payment } = require("./utils");
-const CryptoJS = require("crypto-js");
+// const CryptoJS = require("crypto-js");
 const stellarServer = new Stellar.Server("https://horizon-testnet.stellar.org");
 require("dotenv").config();
 const mysql = require("mysql2");
-const { v4: uuidv4 } = require("uuid");
+// const { v4: uuidv4 } = require("uuid");
 const { TimeoutInfinite } = require("stellar-base");
 
 const con = mysql.createConnection(process.env.DATABASE_URL);
