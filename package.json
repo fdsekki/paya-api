@@ -2,7 +2,7 @@
   "name": "paya-api",
   "private": true,
   "scripts": {
-    "start": "nodemon --ignore data/ server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "apollo-server-express": "^1.4.0",
