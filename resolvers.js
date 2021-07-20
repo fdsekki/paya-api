@@ -1,5 +1,5 @@
 const Stellar = require("stellar-sdk");
-const db = require("./db");
+// const db = require("./db");
 const fetch = require("node-fetch");
 const { createTrustline, allowTrustline, payment } = require("./utils");
 const CryptoJS = require("crypto-js");
