@@ -79,7 +79,7 @@ const Mutation = {
           async () => {
             con.query(sql, new_user, (err, results, fields) => {
               if (err) {
-                return console.error(err.message);
+                return console.error("DATABASE_ERROR: ", err.message);
               }
               console.log("new user added to the database");
             });
