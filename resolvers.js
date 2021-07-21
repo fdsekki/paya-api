@@ -13,7 +13,7 @@ const con = mysql.createConnection(process.env.DATABASE_URL);
 
 con.connect(function (err) {
   if (err) throw err;
-  console.log("Connected!");
+  console.log("\n***DATABASE_RESPONSE: Connected to the database.");
 });
 
 const Query = {
@@ -51,7 +51,7 @@ const Mutation = {
           )}`
         );
       } catch (e) {
-        console.log("Error: ", e);
+        console.log("\n***FUNDING_ERROR: ", e);
       }
     };
 
@@ -72,25 +72,26 @@ const Mutation = {
     //   Buffer.from(keypair.secret(), "utf-8")
     // );
 
-    fundAccounts()
+    await fundAccounts()
       .then(() => {
-        console.log("OK");
+        console.log("\n***FUNDING_REPONSE: Account funded succesfully.");
         createTrustline(keypair.publicKey(), keypair.secret()).then(
           async () => {
             con.query(sql, new_user, (err, results, fields) => {
               if (err) {
-                return console.error("DATABASE_ERROR: ", err.message);
+                return console.error("\n***DATABASE_ERROR: ", err.message);
               }
-              console.log("new user added to the database");
+              console.log(
+                "\n***DATABASE_RESPONSE: New user added to the database."
+              );
             });
 
             await allowTrustline(con, keypair.publicKey());
-            await payment(keypair.publicKey());
           }
         );
       })
       .catch((e) => {
-        console.log("Error", e);
+        console.log("\n***FUNDING_ERROR: ", e);
         throw e;
       });
   },

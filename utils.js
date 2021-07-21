@@ -84,10 +84,10 @@ module.exports = {
       transaction.sign(accountSeed);
 
       await stellarServer.submitTransaction(transaction).then(() => {
-        console.log("Trustline created");
+        console.log("\n***CREATE_TRUSTLINE_REPONSE: Trustline created.");
       });
     } catch (e) {
-      console.log("create trustline failed.", e);
+      console.log("\n***CREATE_TRUSTLINE_ERROR: Create trustline failed.", e);
     }
   },
 
@@ -95,6 +95,53 @@ module.exports = {
     const stellarServer = new Stellar.Server(
       "https://horizon-testnet.stellar.org"
     );
+
+    async function payment(destination) {
+      const stellarServer = new Stellar.Server(
+        "https://horizon-testnet.stellar.org"
+      );
+
+      const distributor = await stellarServer.loadAccount(
+        "GDGYRWFS3TOJVZI3WCCR57P6MCBK2OJRPK2V3WJB4ZUIZB6JBWNS7RZP" // paya(MDLT distributor) public key
+      );
+
+      const AnchorMDLT = new Stellar.Asset(
+        "MDLT",
+        "GCEFEX2OMYPOCPYJZDUWLHHY4ESOST7JYQ5TOGDFVKRRIQCNNGPOMKK7" // maib(issuer) public key
+      );
+
+      txOptions = {
+        fee: await stellarServer.fetchBaseFee(),
+        networkPassphrase: Stellar.Networks.TESTNET,
+      };
+
+      const paymentOptions = {
+        asset: AnchorMDLT,
+        destination: destination,
+        amount: "50",
+      };
+
+      const transaction = new Stellar.TransactionBuilder(distributor, txOptions)
+        .addOperation(Stellar.Operation.payment(paymentOptions))
+        .setTimeout(0)
+        .build();
+
+      transaction.sign(
+        Stellar.Keypair.fromSecret(
+          "SBH5BNTDP4UU5DPVGC5VB537SE3PM2QKU2OABM4MXOB3A75WIR5RFEVB" // paya(MDLT distributor) secret key
+        )
+      );
+
+      await stellarServer
+        .submitTransaction(transaction)
+        .then(() => {
+          console.log("\n***PAYMENT_RESPONSE: Transaction made.");
+        })
+        .catch((e) => {
+          console.log("\n***PAYMENT_ERROR: Transaction failed.");
+          throw e;
+        });
+    }
 
     try {
       let issuerSql = `SELECT * FROM users WHERE email LIKE '%maib@maib.com%'`;
@@ -152,53 +199,17 @@ module.exports = {
 
         transaction.sign(issuingKeys);
 
-        await stellarServer.submitTransaction(transaction).then(() => {
-          console.log("trust allowed");
-        });
+        try {
+          await stellarServer.submitTransaction(transaction).then(() => {
+            console.log("\n***ALLOW_TRUST_REPONSE: Trust allowed");
+            payment(trustor);
+          });
+        } catch (e) {
+          throw e;
+        }
       });
     } catch (e) {
-      console.log("allow trust failed", e);
+      console.log("\n***ALLOW_TRUST_ERROR: Allow trust failed", e);
     }
-  },
-
-  payment: async function payment(destination) {
-    const stellarServer = new Stellar.Server(
-      "https://horizon-testnet.stellar.org"
-    );
-
-    const distributor = await stellarServer.loadAccount(
-      "GDGYRWFS3TOJVZI3WCCR57P6MCBK2OJRPK2V3WJB4ZUIZB6JBWNS7RZP" // paya(MDLT distributor) public key
-    );
-
-    const AnchorMDLT = new Stellar.Asset(
-      "MDLT",
-      "GCEFEX2OMYPOCPYJZDUWLHHY4ESOST7JYQ5TOGDFVKRRIQCNNGPOMKK7" // maib(issuer) public key
-    );
-
-    txOptions = {
-      fee: await stellarServer.fetchBaseFee(),
-      networkPassphrase: Stellar.Networks.TESTNET,
-    };
-
-    const paymentOptions = {
-      asset: AnchorMDLT,
-      destination: destination,
-      amount: "50",
-    };
-
-    const transaction = new Stellar.TransactionBuilder(distributor, txOptions)
-      .addOperation(Stellar.Operation.payment(paymentOptions))
-      .setTimeout(0)
-      .build();
-
-    transaction.sign(
-      Stellar.Keypair.fromSecret(
-        "SBH5BNTDP4UU5DPVGC5VB537SE3PM2QKU2OABM4MXOB3A75WIR5RFEVB" // paya(MDLT distributor) secret key
-      )
-    );
-
-    await stellarServer.submitTransaction(transaction).then(() => {
-      console.log("transaction made");
-    });
   },
 };
