@@ -52,7 +52,7 @@ async function setupIssuer() {
     const operation = {
       asset: AnchorMDLT,
       destination: "GDGYRWFS3TOJVZI3WCCR57P6MCBK2OJRPK2V3WJB4ZUIZB6JBWNS7RZP", // paya public account
-      amount: "1000",
+      amount: "10000",
     };
 
     const transaction = new Stellar.TransactionBuilder(
