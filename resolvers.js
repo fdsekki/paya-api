@@ -76,7 +76,9 @@ const Mutation = {
       .then(() => {
         console.log("OK");
         createTrustline(keypair.publicKey(), keypair.secret()).then(
-          async () => {
+          con.connect(async function (err) {
+            if (err) throw err;
+
             con.query(sql, new_user, (err, results, fields) => {
               if (err) {
                 return console.error("DATABASE_ERROR: ", err.message);
@@ -86,7 +88,7 @@ const Mutation = {
 
             await allowTrustline(con, keypair.publicKey());
             await payment(keypair.publicKey());
-          }
+          })
         );
       })
       .catch((e) => {
