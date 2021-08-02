@@ -113,9 +113,7 @@ const Mutation = {
                   "\n***DATABASE_RESPONSE: New user added to the database."
                 );
               });
-              await allowTrustline(con, keypair.publicKey()).then(() => {
-                con.end();
-              });
+              await allowTrustline(con, keypair.publicKey());
             }
           );
         })
@@ -307,7 +305,6 @@ const Mutation = {
           }
         });
       });
-      con.end();
     };
 
     const getResponse = async () => {
