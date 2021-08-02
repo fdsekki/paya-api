@@ -1,27 +1,28 @@
 type Query {
   userById: String
+  users: [User]!
 }
 
 type Mutation {
   createUser(
-    email: String
-    name: String
-    surname: String
-    password: String
-  ): User
+    email: String!
+    name: String!
+    surname: String!
+    password: String!
+  ): User!
 
   createPayment(
-    currency_receiving: String
-    currency_sending: String
-    quantity: Int
-    recipient: String
-    sender: String
-    memo: String
-  ): String
+    currency_receiving: String!
+    currency_sending: String!
+    quantity: Int!
+    recipient: String!
+    sender: String!
+    memo: String!
+  ): Transaction!
 }
 
 type Transaction {
-  id: ID
+  idtransactions: Int
   currency_receiving: String
   currency_sending: String
   quantity: Int
@@ -31,17 +32,10 @@ type Transaction {
 }
 
 type User {
-  id: ID
+  idusers: Int
   email: String
   name: String
   surname: String
   stellarAccount: String
   stellarSeed: String
-  balance: BalanceUser
-}
-
-type BalanceUser {
-  EURT: String
-  MDLT: String
-  XLM: String
 }

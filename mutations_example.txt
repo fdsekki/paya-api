@@ -1,0 +1,14 @@
+mutation {
+  createPayment (currency_receiving: "123", currency_sending:"123", quantity: 123, recipient: "333333@asdasd.com", sender: "99999@asdasd.com", memo: "TEST") {
+    sender
+    recipient
+  }
+}
+
+mutation {
+  createUser(email: "example@example.com", name: "example", surname: "example", password: "example"){
+    email
+    name
+    surname
+  }
+}
