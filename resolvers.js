@@ -10,13 +10,6 @@ const mysql = require("mysql2");
 // const { v4: uuidv4 } = require("uuid");
 const { TimeoutInfinite } = require("stellar-base");
 
-const con = mysql.createConnection(process.env.DATABASE_URL);
-
-con.connect(function (err) {
-  if (err) throw err;
-  console.log("\n***DATABASE_RESPONSE: Connected to the database.");
-});
-
 const Query = {
   userById: (root, args, context, info) => {
     return "Hello World";
@@ -103,6 +96,15 @@ const Mutation = {
           console.log("\n***FUNDING_REPONSE: Account funded succesfully.");
           await createTrustline(keypair.publicKey(), keypair.secret()).then(
             async () => {
+              const con = mysql.createConnection(process.env.DATABASE_URL);
+
+              con.connect(function (err) {
+                if (err) throw err;
+                console.log(
+                  "\n***DATABASE_RESPONSE: Connected to the database."
+                );
+              });
+
               con.query(sql, new_user, (err, results, fields) => {
                 if (err) {
                   return console.error("\n***DATABASE_ERROR: ", err.message);
@@ -111,8 +113,9 @@ const Mutation = {
                   "\n***DATABASE_RESPONSE: New user added to the database."
                 );
               });
-
-              await allowTrustline(con, keypair.publicKey());
+              await allowTrustline(con, keypair.publicKey()).then(() => {
+                con.end();
+              });
             }
           );
         })
@@ -164,6 +167,13 @@ const Mutation = {
         `SELECT * FROM users WHERE email LIKE ` + "'%" + args.sender + "%' ";
       let recipientSql =
         `SELECT * FROM users WHERE email LIKE ` + "'%" + args.recipient + "%' ";
+
+      const con = mysql.createConnection(process.env.DATABASE_URL);
+
+      con.connect(function (err) {
+        if (err) throw err;
+        console.log("\n***DATABASE_RESPONSE: Connected to the database.");
+      });
 
       con.query(senderSql, [true], async (error, results, fields) => {
         if (error) {
@@ -297,6 +307,7 @@ const Mutation = {
           }
         });
       });
+      con.end();
     };
 
     const getResponse = async () => {
