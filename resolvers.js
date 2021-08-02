@@ -144,7 +144,7 @@ const Mutation = {
     }
 
     await userCreation();
-    await sleep(8000);
+    await sleep(15000);
     return await getResponse();
   },
 
@@ -321,7 +321,7 @@ const Mutation = {
     }
 
     await paymentCreation();
-    await sleep(8000);
+    await sleep(15000);
     return await getResponse();
   },
 };
